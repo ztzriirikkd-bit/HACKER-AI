@@ -1,1 +1,441 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>HACKER TEAM AI CHAT</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"><style>*{  margin:0;  padding:0;  box-sizing:border-box;  font-family:Poppins,sans-serif;}body{  background:#080b14;  min-height:100vh;  display:flex;  justify-content:center;  color:#e2e8f0;  overflow:hidden;}body::before{  content:"";  position:fixed;  inset:0;  background:  radial-gradient(circle at 20% 20%, rgba(109,40,217,.30), transparent 40%),  radial-gradient(circle at 80% 80%, rgba(14,165,233,.25), transparent 40%);  z-index:-1;}.wrapper{  width:100%;  max-width:720px;  height:100vh;  display:flex;  flex-direction:column;  padding:15px;}header{  text-align:center;  padding:20px;}h1{  font-size:30px;  background:linear-gradient(90deg,#a78bfa,#38bdf8,#f472b6);  -webkit-background-clip:text;  -webkit-text-fill-color:transparent;}.sub{  color:#94a3b8;  font-size:13px;  margin-top:5px;}.chatbox{  flex:1;  background:rgba(255,255,255,.04);  border:1px solid rgba(255,255,255,.1);  border-radius:20px;  padding:15px;  overflow-y:auto;  display:flex;  flex-direction:column;  gap:12px;  backdrop-filter:blur(10px);}.empty{  display:flex;  flex-direction:column;  align-items:center;  justify-content:center;  flex:1;  text-align:center;  color:#94a3b8;}.empty-icon{  font-size:55px;  margin-bottom:10px;}.suggs{  display:flex;  flex-wrap:wrap;  justify-content:center;  gap:10px;  margin-top:15px;}.sugg{  border:none;  padding:8px 14px;  border-radius:20px;  background:rgba(109,40,217,.20);  color:#c4b5fd;  cursor:pointer;}.msg{  max-width:75%;  padding:12px 15px;  border-radius:16px;  font-size:14px;  line-height:1.6;  white-space:pre-wrap;}.user{  align-self:flex-end;  background:linear-gradient(135deg,#6d28d9,#4338ca);}.bot{  align-self:flex-start;  background:rgba(255,255,255,.08);  border:1px solid rgba(255,255,255,.08);}.input-area{  display:flex;  gap:10px;  margin-top:12px;}textarea{  flex:1;  resize:none;  border:none;  outline:none;  border-radius:14px;  padding:14px;  background:rgba(255,255,255,.06);  color:white;  font-size:14px;  min-height:52px;  max-height:120px;}textarea::placeholder{  color:#64748b;}#sendBtn{  width:55px;  border:none;  border-radius:14px;  background:linear-gradient(135deg,#7c3aed,#06b6d4);  color:white;  font-size:20px;  cursor:pointer;}.typing{  display:flex;  gap:5px;}.typing span{  width:7px;  height:7px;  border-radius:50%;  background:#a78bfa;  animation:blink 1.2s infinite;}.typing span:nth-child(2){  animation-delay:.2s;}.typing span:nth-child(3){  animation-delay:.4s;}@keyframes blink{  0%,100%{    opacity:.2;  }  50%{    opacity:1;  }}footer{  text-align:center;  margin-top:10px;  color:#64748b;  font-size:12px;}</style></head><body><div class="wrapper"><header>  <h1>⚡ HACKER TEAM AI CHAT ⚡</h1>  <p class="sub">Smart Multilingual AI Assistant</p></header><div class="chatbox" id="chatBox"><div class="empty" id="emptyState"><div class="empty-icon">▀▀▀▀▀▀▀▀▀🚨 HACKER TEAM AI 🚨▄▄▄▄▄▄▄▄▄</div><h2>Welcome To HACKER TEAM AI</h2><p></p><div class="suggs"><button class="sugg" onclick="useSugg(this)">Write Shayari</button><button class="sugg" onclick="useSugg(this)">Teach me Python</button><button class="sugg" onclick="useSugg(this)">Tell me a joke</button><button class="sugg" onclick="useSugg(this)">Create HTML website</button></div></div></div><div class="input-area"><textareaid="inp"placeholder="Type your message..."rows="1"onkeydown="handleKey(event)"oninput="resize(this)"></textarea><button id="sendBtn" onclick="send()">➤</button></div><footer>Powered by ROCKY@ — Meta Llama 3</footer></div><script>const API_KEY = "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";const chatBox = document.getElementById("chatBox");/* resize */function resize(el){  el.style.height = "auto";  el.style.height = el.scrollHeight + "px";}/* suggestions */function useSugg(btn){  document.getElementById("inp").value =  btn.innerText;  send();}/* enter */function handleKey(e){  if(e.key === "Enter" && !e.shiftKey){    e.preventDefault();    send();  }}/* add message */function addMsg(text,type){  const empty =  document.getElementById("emptyState");  if(empty) empty.remove();  let div = document.createElement("div");  div.className = "msg " + type;  div.innerText = text;  chatBox.appendChild(div);  chatBox.scrollTop = chatBox.scrollHeight;  return div;}/* AI send */async function send(){  let input =  document.getElementById("inp");  let text = input.value.trim();  if(!text) return;  addMsg(text,"user");  input.value = "";  input.style.height = "auto";  let loading =  document.createElement("div");  loading.className = "msg bot";  loading.innerHTML = `  <div class="typing">    <span></span>    <span></span>    <span></span>  </div>  `;  chatBox.appendChild(loading);  chatBox.scrollTop = chatBox.scrollHeight;  try{    let res = await fetch(      "https://openrouter.ai/api/v1/chat/completions",      {        method:"POST",        headers:{          "Authorization":"Bearer " + API_KEY,          "Content-Type":"application/json",          "HTTP-Referer":"https://localhost",          "X-Title":"HACKER TEAM AI"        },        body:JSON.stringify({          model:"meta-llama/llama-3-8b-instruct",          messages:[            {              role:"system",              content:              `              You are a smart AI assistant like ChatGPT.              Rules:              - Reply naturally              - Reply in same language as user              - English → English              - Hindi → Hindi              - Odia → Odia              - Urdu → Urdu              - Use stylish replies              - Use emojis sometimes              - If user asks illegal hacking then reply:              "⚠️ I cannot help with illegal hacking."              `            },            {              role:"user",              content:text            }          ]        })      }    );    let data = await res.json();    let reply =    data.choices?.[0]?.message?.content ||    "❌ No reply";    loading.innerText = `${reply}⚡ Powered By hacker team@`;  }catch(err){    loading.innerText =    "❌ API Error";  }}</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HACKER TEAM AI CHAT</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Poppins,sans-serif;
+}
+
+body{
+  background:#080b14;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  color:#e2e8f0;
+  overflow:hidden;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+  radial-gradient(circle at 20% 20%, rgba(109,40,217,.30), transparent 40%),
+  radial-gradient(circle at 80% 80%, rgba(14,165,233,.25), transparent 40%);
+  z-index:-1;
+}
+
+.wrapper{
+  width:100%;
+  max-width:720px;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  padding:15px;
+}
+
+header{
+  text-align:center;
+  padding:20px;
+}
+
+h1{
+  font-size:30px;
+  background:linear-gradient(90deg,#a78bfa,#38bdf8,#f472b6);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.sub{
+  color:#94a3b8;
+  font-size:13px;
+  margin-top:5px;
+}
+
+.chatbox{
+  flex:1;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;
+  padding:15px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  backdrop-filter:blur(10px);
+}
+
+.empty{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  flex:1;
+  text-align:center;
+  color:#94a3b8;
+}
+
+.empty-icon{
+  font-size:55px;
+  margin-bottom:10px;
+}
+
+.suggs{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+  margin-top:15px;
+}
+
+.sugg{
+  border:none;
+  padding:8px 14px;
+  border-radius:20px;
+  background:rgba(109,40,217,.20);
+  color:#c4b5fd;
+  cursor:pointer;
+}
+
+.msg{
+  max-width:75%;
+  padding:12px 15px;
+  border-radius:16px;
+  font-size:14px;
+  line-height:1.6;
+  white-space:pre-wrap;
+}
+
+.user{
+  align-self:flex-end;
+  background:linear-gradient(135deg,#6d28d9,#4338ca);
+}
+
+.bot{
+  align-self:flex-start;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.input-area{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+
+textarea{
+  flex:1;
+  resize:none;
+  border:none;
+  outline:none;
+  border-radius:14px;
+  padding:14px;
+  background:rgba(255,255,255,.06);
+  color:white;
+  font-size:14px;
+  min-height:52px;
+  max-height:120px;
+}
+
+textarea::placeholder{
+  color:#64748b;
+}
+
+#sendBtn{
+  width:55px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,#7c3aed,#06b6d4);
+  color:white;
+  font-size:20px;
+  cursor:pointer;
+}
+
+.typing{
+  display:flex;
+  gap:5px;
+}
+
+.typing span{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#a78bfa;
+  animation:blink 1.2s infinite;
+}
+
+.typing span:nth-child(2){
+  animation-delay:.2s;
+}
+
+.typing span:nth-child(3){
+  animation-delay:.4s;
+}
+
+@keyframes blink{
+  0%,100%{
+    opacity:.2;
+  }
+  50%{
+    opacity:1;
+  }
+}
+
+footer{
+  text-align:center;
+  margin-top:10px;
+  color:#64748b;
+  font-size:12px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+<header>
+  <h1>⚡ HACKER TEAM AI CHAT ⚡</h1>
+  <p class="sub">Smart Multilingual AI Assistant</p>
+</header>
+
+<div class="chatbox" id="chatBox">
+
+<div class="empty" id="emptyState">
+
+<div class="empty-icon">▀▀▀▀▀▀▀▀▀
+🚨 HACKER TEAM AI 🚨
+▄▄▄▄▄▄▄▄▄</div>
+
+<h2>Welcome To HACKER TEAM AI</h2>
+
+<p></p>
+
+<div class="suggs">
+
+<button class="sugg" onclick="useSugg(this)">
+Write Shayari
+</button>
+
+<button class="sugg" onclick="useSugg(this)">
+Teach me Python
+</button>
+
+<button class="sugg" onclick="useSugg(this)">
+Tell me a joke
+</button>
+
+<button class="sugg" onclick="useSugg(this)">
+Create HTML website
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="input-area">
+
+<textarea
+id="inp"
+placeholder="Type your message..."
+rows="1"
+onkeydown="handleKey(event)"
+oninput="resize(this)"
+></textarea>
+
+<button id="sendBtn" onclick="send()">➤</button>
+
+</div>
+
+<footer>
+Powered by ROCKY@ — Meta Llama 3
+</footer>
+
+</div>
+
+<script>
+
+const API_KEY = "";
+
+const chatBox = document.getElementById("chatBox");
+
+/* resize */
+function resize(el){
+
+  el.style.height = "auto";
+
+  el.style.height = el.scrollHeight + "px";
+
+}
+
+/* suggestions */
+function useSugg(btn){
+
+  document.getElementById("inp").value =
+  btn.innerText;
+
+  send();
+
+}
+
+/* enter */
+function handleKey(e){
+
+  if(e.key === "Enter" && !e.shiftKey){
+
+    e.preventDefault();
+
+    send();
+
+  }
+
+}
+
+/* add message */
+function addMsg(text,type){
+
+  const empty =
+  document.getElementById("emptyState");
+
+  if(empty) empty.remove();
+
+  let div = document.createElement("div");
+
+  div.className = "msg " + type;
+
+  div.innerText = text;
+
+  chatBox.appendChild(div);
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  return div;
+
+}
+
+/* AI send */
+async function send(){
+
+  let input =
+  document.getElementById("inp");
+
+  let text = input.value.trim();
+
+  if(!text) return;
+
+  addMsg(text,"user");
+
+  input.value = "";
+
+  input.style.height = "auto";
+
+  let loading =
+  document.createElement("div");
+
+  loading.className = "msg bot";
+
+  loading.innerHTML = `
+  <div class="typing">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  `;
+
+  chatBox.appendChild(loading);
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  try{
+
+    let res = await fetch(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+
+        method:"POST",
+
+        headers:{
+          "Authorization":"Bearer " + API_KEY,
+          "Content-Type":"application/json",
+          "HTTP-Referer":"https://localhost",
+          "X-Title":"HACKER TEAM AI"
+        },
+
+        body:JSON.stringify({
+
+          model:"meta-llama/llama-3-8b-instruct",
+
+          messages:[
+
+            {
+              role:"system",
+
+              content:
+              `
+              You are a smart AI assistant like ChatGPT.
+
+              Rules:
+              - Reply naturally
+              - Reply in same language as user
+              - English → English
+              - Hindi → Hindi
+              - Odia → Odia
+              - Urdu → Urdu
+              - Use stylish replies
+              - Use emojis sometimes
+              - If user asks illegal hacking then reply:
+              "⚠️ I cannot help with illegal hacking."
+              `
+            },
+
+            {
+              role:"user",
+              content:text
+            }
+
+          ]
+
+        })
+
+      }
+    );
+
+    let data = await res.json();
+
+    let reply =
+    data.choices?.[0]?.message?.content ||
+    "❌ No reply";
+
+    loading.innerText = `
+
+${reply}
+
+⚡ Powered By hacker team@
+`;
+
+  }catch(err){
+
+    loading.innerText =
+    "❌ API Error";
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
